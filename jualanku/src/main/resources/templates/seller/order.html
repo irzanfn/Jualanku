@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="seller/layout/header :: head"></head>
+<body class="animsition">
+<div th:replace="seller/layout/header :: header"></div>
+
+<!-- Title page -->
+<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('../images/bg-01.jpg');">
+    <h2 class="ltext-105 cl0 txt-center">
+        Order
+    </h2>
+</section>
+
+
+<!-- Content page -->
+<div class="container-fluid mt-100 pt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="table_id" class="display">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Img</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Order Date</th>
+                    <th>Buyer</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="orderItem, stat : ${orderItems}">
+                    <tr>
+                        <td><span th:text="${stat.index + 1}"></span></td>
+                        <td>
+                            <img th:src="@{'/img/upload/'+${orderItem.getProduct().img}}" alt="IMG" style="width: 60px; margin-bottom: 5px">
+                        </td>
+                        <td><span th:text="${orderItem.getProduct().name}"></span></td>
+                        <td><span th:text="${orderItem.productQty}">X</span></td>
+                        <td th:with="var= ${orderItem.productQty * orderItem.getProduct().price}"><span th:text="${var}"></span></td>
+                        <td>
+                            <div th:if="${#strings.equals(orderItem.status, 'Pending')}">
+                                <span th:text="${orderItem.status}" class="badge badge-warning"></span>
+                            </div>
+                            <div th:if="${#strings.equals(orderItem.status, 'Sent')}">
+                                <span th:text="${orderItem.status}" class="badge badge-success"></span>
+                            </div>
+                            <div th:if="${#strings.equals(orderItem.status, 'Canceled')}">
+                                <span th:text="${orderItem.status}" class="badge badge-danger"></span>
+                            </div>
+                        </td>
+                        <td><span th:text="${orderItem.dateCreated}"></span></td>
+                        <td><span th:text="${orderItem.getBuyer().name}"></span>
+                            <br>
+                            <span th:text="${orderItem.getBuyer().address}"></span>
+                        </td>
+                        <td>
+                            <div th:if="${#strings.equals(orderItem.status, 'Pending')}">
+                                <button type="button" class="btn btn-success acceptOrder" th:attr="data-id=${orderItem.id}">Accept</button>
+                                <button type="button" class="btn btn-danger declineOrder" th:attr="data-id=${orderItem.id}">Decline</button>
+                            </div>
+                            <div th:unless="${#strings.equals(orderItem.status, 'Pending')}">
+                                <button type="button" class="btn btn-success" disabled>Accept</button>
+                                <button type="button" class="btn btn-danger" disabled>Decline</button>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="seller/layout/footer :: footer"></div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('#table_id').DataTable();
+    } );
+</script>
+</html>

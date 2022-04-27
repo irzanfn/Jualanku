@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head th:replace="buyer/layout/header :: head"></head>
+
+<body class="animsition">
+<div th:replace="buyer/layout/header :: header"></div>
+<!-- breadcrumb -->
+<div class="container">
+  <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+    <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+      Home
+      <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+    </a>
+
+    <span class="stext-109 cl4">
+                Shoping Cart
+            </span>
+  </div>
+</div>
+
+
+<!-- Shoping Cart -->
+<div th:unless="${#lists.isEmpty(cartItems)}">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+        <div class="m-l-25 m-r--38 m-lr-0-xl">
+          <div class="wrap-table-shopping-cart">
+            <table class="table-shopping-cart">
+              <tr class="table_head">
+                <th class="column-1">Product</th>
+                <th class="column-2"></th>
+                <th class="column-3">Price</th>
+                <th class="column-4">Quantity</th>
+                <th class="column-5">Total</th>
+              </tr>
+              <form th:action="@{/buyer/cartItem/update}" method="POST" th:object="${form}">
+                <th:block th:each="cartItem, itemStat : *{cartItems}">
+                  <tr class="table_row">
+                    <td class="column-1">
+                      <a href="#" class="submitForm" th:attr="data-id=${cartItem.id}">
+                        <div class="how-itemcart1">
+                          <img th:src="@{'/img/upload/'+${cartItem.getProduct().img}}" alt="IMG">
+                        </div>
+                      </a>
+                    </td>
+                    <td class="column-2"><span th:text="${cartItem.getProduct().name}"></span></td>
+                    <td class="column-3">IDR <span th:text="${cartItem.getProduct().price}"></span></td>
+                    <input type="hidden" name="id" id="id" th:field="*{cartItems[__${itemStat.index}__].id}">
+                    <input type="hidden" name="cart" id="cart" th:field="*{cartItems[__${itemStat.index}__].cart}">
+                    <input type="hidden" name="product" id="product" th:field="*{cartItems[__${itemStat.index}__].product}">
+                    <input type="hidden" name="dateCreated" id="dateCreated" th:field="*{cartItems[__${itemStat.index}__].dateCreated}">
+                    <td class="column-4">
+                      <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                          <i class="fs-16 zmdi zmdi-minus"></i>
+                        </div>
+                        <input class="mtext-104 cl3 txt-center num-product" type="number" th:field="*{cartItems[__${itemStat.index}__].productQty}" th:value="${cartItems[__${itemStat.index}__].productQty}" th:attr="min=1">
+
+                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                          <i class="fs-16 zmdi zmdi-plus"></i>
+                        </div>
+                      </div>
+                    </td>
+                    <th:block th:with="var = ${cartItem.productQty * cartItem.getProduct().price}">
+                      <td class="column-5">IDR <span th:text="${var}"></span></td>
+                    </th:block>
+                  </tr>
+                </th:block>
+            </table>
+          </div>
+          <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+            <button class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10" type="submit">
+              Update Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      </form>
+      <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+        <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+          <h4 class="mtext-109 cl2 p-b-30">
+            Cart Totals
+          </h4>
+
+          <div class="flex-w flex-t bor12 p-b-13">
+            <div class="size-208">
+								<span class="stext-110 cl2">
+									Subtotal:
+								</span>
+            </div>
+
+            <div class="size-209">
+								<span class="mtext-110 cl2">
+									IDR <span th:text="${#aggregates.sum(cartItems.![productQty * product.price])}"></span>
+								</span>
+            </div>
+          </div>
+
+          <div class="flex-w flex-t bor12 p-t-15 p-b-30">
+            <div class="size-208 w-full-ssm">
+								<span class="stext-110 cl2">
+									Shipping:
+								</span>
+            </div>
+
+            <div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+              <p class="stext-111 cl6 p-t-2">
+                <span th:text="${cartItems[0].cart.getBuyer().getAddress()}"></span>
+              </p>
+            </div>
+            <br>
+            <div class="size-208 w-full-ssm p-t-2">
+								<span class="stext-110 cl2">
+									Shipping cost:
+								</span>
+            </div>
+
+            <div class="size-209 p-t-1">
+								<span class="mtext-110 cl2">
+									IDR 10000
+								</span>
+            </div>
+          </div>
+          <div class="flex-w flex-t p-t-27 p-b-33">
+            <div class="size-208">
+								<span class="stext-110 cl2">
+									Your wallet:
+								</span>
+            </div>
+            <div class="size-209">
+								<span class="mtext-110 cl2">
+									IDR <span th:text="${wallet.getTotalBalance()}">
+								</span>
+            </div>
+            <br>
+            <div class="size-208">
+								<span class="mtext-101 cl2">
+									Total:
+								</span>
+            </div>
+
+            <div class="size-209 p-t-1">
+								<span class="mtext-110 cl2" th:with="total = ${10000 + #aggregates.sum(cartItems.![productQty * product.price])}">
+									IDR <span th:text="${total}"></span>
+								</span>
+            </div>
+            <br>
+            <div class="size-208">
+								<span class="stext-110 cl2">
+
+								</span>
+            </div>
+
+            <div class="size-209">
+								<span class="mtext-110 cl2" th:with="result = ${wallet.getTotalBalance() - (#aggregates.sum(cartItems.![productQty * product.price]) + 10000)}">
+									IDR <span th:text="${result}"></span>
+								</span>
+            </div>
+          </div>
+          <div th:with="result = ${wallet.getTotalBalance() - (#aggregates.sum(cartItems.![productQty * product.price]) + 10000)}">
+            <th:block th:if="${0 <= result}">
+              <form th:action="@{/buyer/order/create}" method="POST">
+                <input type="hidden" th:name="cartId" th:id="cartId" th:value="${cart.id}">
+                <input type="hidden" th:name="totalPrice" th:id="totalPrice" th:value="${#aggregates.sum(cartItems.![productQty * product.price])}">
+                <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="button" id="checkout">
+                  Proceed to Checkout
+                </button>
+              </form>
+            </th:block>
+            <th:block th:if="${-1 > result}">
+              <a th:href="@{/buyer/wallet/topup}">
+                <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                  Topup your wallet
+                </button>
+              </a>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div th:if="${#lists.isEmpty(cartItems)}">
+  <div class="container-fluid mt-100 pt-5">
+    <div class="row">
+      <div class="col-md-12">
+          <div class="card-body cart">
+            <div class="col-sm-12 empty-cart-cls text-center"> <img th:src="@{/images/empty_cart.png}" width="500" height="500" class="img-fluid mb-4 mr-3">
+              <h4 style="color: #FDB51A">Add something to make me happy :)</h4>
+              <br>
+              <a th:href="@{/buyer/product}" class="btn btn-dark cart-btn-transform m-3">Go to product</a>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="buyer/layout/footer :: footer"></div>
+</body>
+<script th:inline="javascript">
+  $('.submitForm').on('click', function (e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    console.log(id);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+        $.ajax({
+          type: "POST",
+          url: "/buyer/cartItem/" + id + "/delete",
+          data: { id: id },
+          success: function (data) {
+            $(document).ajaxStop(function () {
+              window.location.reload();
+            });
+          }
+        });
+      }
+    });
+  });
+</script>
+
+</html>

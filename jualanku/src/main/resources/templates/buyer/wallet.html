@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="buyer/layout/header :: head"></head>
+<body class="animsition">
+<div th:replace="buyer/layout/header :: header"></div>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+            Home
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4">
+				Wallet
+			</span>
+    </div>
+</div>
+
+
+<!-- Shoping Cart -->
+    <div class="container">
+        <div class="row">
+                    <div class="col-lg-7 mx-auto">
+                        <div class="bg-white rounded-lg shadow-sm py-5">
+                            <!-- Credit card form tabs -->
+                            <ul role="tablist" class="nav nav-pills rounded-pill nav-fill mb-3">
+                                <li class="nav-item">
+                                    <h2>Credit Card</h2>
+                                </li>
+                            </ul>
+                            <!-- End -->
+
+
+                            <!-- Credit card form content -->
+                            <div class="tab-content">
+
+                                <!-- credit card info-->
+                                <div id="nav-tab-card" class="tab-pane fade show active">
+                                    <p class="alert alert-success">Some text success or error</p>
+                                    <form th:action="@{/buyer/wallet/topup}" th:object = "${creditCard}" method="POST">
+                                        <div class="form-group">
+                                            <label for="username">Full name (on the card)</label>
+                                            <input type="text" th:field="*{name}" placeholder="Jason Doe" required class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="username">Balance</label>
+                                            <input type="number" th:field="*{balance}" placeholder="1000000" required class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cardNumber">Card number</label>
+                                            <div class="input-group">
+                                                <input type="text" th:field="*{cardNumber}" placeholder="Your card number" class="form-control" required th:attr="max=16, min=16" >
+                                                <div class="input-group-append">
+                                            <span class="input-group-text text-muted">
+                                                <i class="fa fa-cc-visa mx-1"></i>
+                                                <i class="fa fa-cc-amex mx-1"></i>
+                                                <i class="fa fa-cc-mastercard mx-1"></i>
+                                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <div class="form-group">
+                                                    <label><span class="hidden-xs">Expiration</span></label>
+                                                    <div class="input-group">
+                                                        <input type="number" placeholder="MM" th:field="*{month}" class="form-control" required>
+                                                        <input type="number" placeholder="YY" th:field="*{year}" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group mb-4">
+                                                    <label data-toggle="tooltip" title="Three-digits code on the back of your card">CVV
+                                                        <i class="fa fa-question-circle"></i>
+                                                    </label>
+                                                    <input type="text" required class="form-control" th:field="*{cvv}" th:attr="min=3, max=3">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="subscribe btn btn-dark btn-block rounded-pill shadow-sm"> Confirm  </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- End -->
+
+                        </div>
+                    </div>
+        </div>
+    </div>
+
+<div th:replace="buyer/layout/footer :: footer"></div>
+</body>
+</html>
